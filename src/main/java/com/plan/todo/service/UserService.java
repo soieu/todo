@@ -4,6 +4,7 @@ import com.plan.todo.model.UserEntity;
 import com.plan.todo.persistence.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -29,8 +30,13 @@ public class UserService {
     }
 
     // 로그인 시 인증
-    public UserEntity getByCredential(final String username, final String password)
+    public UserEntity getByCredential(final String username, final String password, final PasswordEncoder encoder)
     {
-        return userRepository.findByUsernameAndPassword(username, password);
+        final UserEntity originalUser = userRepository.findByUsername(username);
+        // matches 메서드 -> salting 해서 db 비밀번호 랑 비교시 다른거 방지
+        if(originalUser != null && encoder.matches(password, originalUser.getPassword())){
+            return originalUser;
+        }
+        return null;
     }
 }
