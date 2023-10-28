@@ -247,3 +247,7 @@ applicaion.properties
 # End of https://www.toptal.com/developers/gitignore/api/gradle
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,intellij,java
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

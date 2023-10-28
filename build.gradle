@@ -26,6 +26,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
+    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
+    runtimeOnly group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'
+
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // https://mvnrepository.com/artifact/com.google.guava/guava
@@ -40,4 +43,22 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+task('release') {
+    dependsOn("build")
+    doLast {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'eb', 'setenv', 'SPRING_PROFILES_ACTIVE=prod'
+            standardOutput = stdout
+        }
+        println "eb setenv SPRING_PROFILES_ACTIVE=prod : \nstdout"
+        exec {
+            commandLine 'eb', 'deploy'
+            standardOutput = stdout
+        }
+        println "eb deploy :\n$stdout"
+        println "Release succeeded."
+    }
 }
